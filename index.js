@@ -21,10 +21,24 @@ body.innerHTML = '<h1>Swisspass Scan</h1>' +
     '<fieldset>' +
     '<legend>Enter Swisspass ID</legend>' +
     '<label>Scan Swisspass' +
-    '<input type="file" capture="camera" accept="image/*">' +
+    '<input type="file" capture="camera" accept="image/*" id="barcodescan">' +
     '</label>' +
     '</fieldset>' +
     '</form>';
+
+const barcodeScan = body.querySelector('#barcodescan');
+
+const updateNumber = () => {
+    const curFiles = barcodeScan.files;
+
+    console.log(curFiles);
+};
+
+barcodeScan.addEventListener('change', updateNumber);
+
+
+console.log(barcodeScan);
+
 
 
 
