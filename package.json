@@ -1,0 +1,11 @@
+{
+  "name": "swisspass-scan",
+  "version": "1.0.0",
+  "description": "Allows you to more easily enter your SwissPass ID.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Sebastian Gfeller (sebastian.gfeller@gmail.com)",
+  "license": "Apache-2.0"
+}
