@@ -13,6 +13,7 @@ Copyright 2019 Sebastian Gfeller
    See the License for the specific language governing permissions and
    limitations under the License.
 */
+import Quagga from 'quagga';
 
 const body = document.querySelector('body');
 
@@ -30,6 +31,23 @@ const barcodeScan = body.querySelector('#barcodescan');
 
 const updateNumber = () => {
     const curFiles = barcodeScan.files;
+
+    if (curFiles.length > 0) {
+	const reader = new FileReader();
+	reader.addEventListener('load', function () {
+	    Quagga.decodeSingle({
+		locate: true,
+		src: reader.result
+            }, function (result) {
+		if(result.codeResult) {
+		    console.log("result", result.codeResult.code);
+		} else {
+		    console.log("not detected");
+		}
+	    });
+	}, false);
+	reader.readAsDataURL(curFiles[0]);
+    }
 
     console.log(curFiles);
 };
