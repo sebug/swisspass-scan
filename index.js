@@ -30,6 +30,16 @@ body.innerHTML = '<h1>Swisspass Scan</h1>' +
 
 const barcodeScan = body.querySelector('#barcodescan');
 
+const reportCode = (code) => {
+    const resultP = document.querySelector('#result');
+    resultP.innerHTML = code;
+};
+
+const reportError = (err) => {
+    const resultP = document.querySelector('#result');
+    resultP.innerHTML = 'Code not found';
+};
+
 const updateNumber = () => {
     const curFiles = barcodeScan.files;
 
@@ -40,13 +50,7 @@ const updateNumber = () => {
 	    img.addEventListener('load', () => {
 		javascriptBarcodeReader(img, {
 		    barcode: 'code-128'
-		}).then(code => {
-		    const resultP = document.querySelector('#result');
-		    resultP.innerHTML = code;
-		}, (err) => {
-		    const resultP = document.querySelector('#result');
-		    resultP.innerHTML = 'Code not found';
-		});
+		}).then(reportCode, reportError);
 	    });
 	    img.src = reader.result;
 	}, false);
