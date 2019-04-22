@@ -32,7 +32,7 @@ const barcodeScan = body.querySelector('#barcodescan');
 
 const reportCode = (code) => {
     const resultP = document.querySelector('#result');
-    resultP.innerHTML = code;
+    resultP.innerHTML = 'Read code: ' + code;
 };
 
 const reportError = (err) => {
@@ -48,28 +48,30 @@ const readFile = (file, callback) => {
     reader.readAsDataURL(file);
 };
 
+const urlAsImage = (urlResult, loadCallback) => {
+    const img = new Image();
+    img.addEventListener('load', () => {
+	loadCallback(img);
+    });
+    img.src = urlResult;
+};
+
 const updateNumber = () => {
     const curFiles = barcodeScan.files;
 
     if (curFiles.length > 0) {
 	readFile(curFiles[0], (urlResult) => {
-	    const img = new Image();
-	    img.addEventListener('load', () => {
+	    urlAsImage(urlResult, img => {
 		javascriptBarcodeReader(img, {
 		    barcode: 'code-128'
 		}).then(reportCode, reportError);
 	    });
-	    img.src = urlResult;
 	});
     }
-
-    console.log(curFiles);
 };
 
 barcodeScan.addEventListener('change', updateNumber);
 
-
-console.log(barcodeScan);
 
 
 
