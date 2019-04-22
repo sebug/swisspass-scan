@@ -13,8 +13,6 @@ Copyright 2019 Sebastian Gfeller
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-import Quagga from 'quagga';
-
 const body = document.querySelector('body');
 
 body.innerHTML = '<h1>Swisspass Scan</h1>' +
@@ -35,16 +33,8 @@ const updateNumber = () => {
     if (curFiles.length > 0) {
 	const reader = new FileReader();
 	reader.addEventListener('load', function () {
-	    Quagga.decodeSingle({
-		locate: true,
-		src: reader.result
-            }, function (result) {
-		if(result.codeResult) {
-		    console.log("result", result.codeResult.code);
-		} else {
-		    console.log("not detected");
-		}
-	    });
+	    // reader.result
+	    console.log('read');
 	}, false);
 	reader.readAsDataURL(curFiles[0]);
     }
