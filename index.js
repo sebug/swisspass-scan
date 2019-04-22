@@ -13,6 +13,8 @@ Copyright 2019 Sebastian Gfeller
    See the License for the specific language governing permissions and
    limitations under the License.
 */
+import javascriptBarcodeReader from 'javascript-barcode-reader';
+
 const body = document.querySelector('body');
 
 body.innerHTML = '<h1>Swisspass Scan</h1>' +
@@ -23,7 +25,8 @@ body.innerHTML = '<h1>Swisspass Scan</h1>' +
     '<input type="file" capture="camera" accept="image/*" id="barcodescan">' +
     '</label>' +
     '</fieldset>' +
-    '</form>';
+    '</form>' +
+    '<p id="result"></p>';
 
 const barcodeScan = body.querySelector('#barcodescan');
 
@@ -33,8 +36,19 @@ const updateNumber = () => {
     if (curFiles.length > 0) {
 	const reader = new FileReader();
 	reader.addEventListener('load', function () {
-	    // reader.result
-	    console.log('read');
+	    const img = new Image();
+	    img.addEventListener('load', () => {
+		javascriptBarcodeReader(img, {
+		    barcode: 'code-128'
+		}).then(code => {
+		    const resultP = document.querySelector('#result');
+		    resultP.innerHTML = code;
+		}, (err) => {
+		    const resultP = document.querySelector('#result');
+		    resultP.innerHTML = 'Code not found';
+		});
+	    });
+	    img.src = reader.result;
 	}, false);
 	reader.readAsDataURL(curFiles[0]);
     }
