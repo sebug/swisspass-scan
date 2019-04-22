@@ -56,6 +56,54 @@ const urlAsImage = (urlResult, loadCallback) => {
     img.src = urlResult;
 };
 
+const isRed = (r, g, b, a) => {
+    const allTogether = r + g + b;
+    const average = allTogether / 3;
+
+    return r - average > 100;
+};
+
+const lastRedPixelHeight = (img) => {
+    const canvas = document.createElement('canvas');
+    canvas.width = img.width;
+    canvas.height = img.height;
+    canvas.getContext('2d').drawImage(img, 0, 0, img.width, img.height);
+    const imageData = canvas.getContext('2d').getImageData(0, 0, img.width, img.height);
+    const pix = imageData.data;
+    let logCount = 0;
+    let lastRedPixelPosition = 0;
+    let currentLineRedCount = 0;
+    let redCounts = [];
+    for (let i = 0; i < pix.length; i += 4) {
+	if ((i / 4) % img.width === 0) {
+	    redCounts.push(currentLineRedCount);
+	    currentLineRedCount = 0;
+	}
+	if (isRed(pix[i], pix[i + 1], pix[i + 2], pix[i + 3])) {
+	    currentLineRedCount += 1;
+	}
+    }
+    const redCountsAveraged = [];
+    const linesToAverage = 8;
+    for (let y = 0; y < redCounts.length - linesToAverage; y += 1) {
+	let sum = 0;
+	for (let i = 0; i < linesToAverage; i += 1) {
+	    sum += redCounts[y + i];
+	}
+	redCountsAveraged.push(sum / linesToAverage);
+    }
+    const kindaRedLines = [];
+    for (let y = 0; y < redCountsAveraged.length; y += 1) {
+	if (redCountsAveraged[y] > img.width / 4) {
+	    kindaRedLines.push(y);
+	}
+    }
+    if (kindaRedLines.length > 0) {
+	return kindaRedLines[kindaRedLines.length - 1];
+    }
+    return 0;
+};
+
 const updateNumber = () => {
     const curFiles = barcodeScan.files;
 
@@ -65,6 +113,7 @@ const updateNumber = () => {
 		javascriptBarcodeReader(img, {
 		    barcode: 'code-128'
 		}).then(reportCode, reportError);
+		lastRedPixelHeight(img);
 	    });
 	});
     }
