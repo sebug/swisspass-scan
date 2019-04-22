@@ -40,21 +40,27 @@ const reportError = (err) => {
     resultP.innerHTML = 'Code not found';
 };
 
+const readFile = (file, callback) => {
+    const reader = new FileReader();
+    reader.addEventListener('load', () => {
+	callback(reader.result);
+    }, false);
+    reader.readAsDataURL(file);
+};
+
 const updateNumber = () => {
     const curFiles = barcodeScan.files;
 
     if (curFiles.length > 0) {
-	const reader = new FileReader();
-	reader.addEventListener('load', function () {
+	readFile(curFiles[0], (urlResult) => {
 	    const img = new Image();
 	    img.addEventListener('load', () => {
 		javascriptBarcodeReader(img, {
 		    barcode: 'code-128'
 		}).then(reportCode, reportError);
 	    });
-	    img.src = reader.result;
-	}, false);
-	reader.readAsDataURL(curFiles[0]);
+	    img.src = urlResult;
+	});
     }
 
     console.log(curFiles);
